@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Login</title>
+</head>
+
+<body>
+    <form id="formLogin">
+        <div>
+            Email: <input id="email" type="email" name="email" required>
+        </div>
+        <div>
+            Password: <input id="password" type="password" name="password" required>
+        </div>
+        <div>
+            <input type="submit" value="Iniciar sesión">
+        </div>
+    </form>
+
+    <script>
+        let formLogin = document.getElementById("formLogin");
+        formLogin.addEventListener("submit", async (event) => {
+            try {
+                event.preventDefault();
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+
+                let raw = JSON.stringify({
+                    email: email.value,
+                    password: password.value
+                });
+
+                let response = await fetch("/api/v1/login", {
+                    method: 'POST',
+                    body: raw,
+                    headers: myHeaders,
+                });
+                let data = await response.json();
+
+                alert(data.message)
+                if (response.status == 200) {
+                    console.log(data);
+                    let token = data.token;
+                    sessionStorage.setItem("token", token)
+                    location.href = "/privada?token="+token;
+                };
+            } catch (error) {
+                alert("Ha ocurrido un error al intentar iniciar sesión.")
+            }
+
+        });
+
+    </script>
+</body>
+
+</html>
